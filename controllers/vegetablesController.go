@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -20,7 +19,7 @@ type Vegetable struct {
 type VegetableResponse struct {
 	Status     string
 	Code       int
-	Vegetables []*models.VegetableRecord
+	Vegetables []models.VegetableRecord
 }
 
 // func AllVegetables(w http.ResponseWriter, req *http.Request) {
@@ -45,10 +44,6 @@ type VegetableResponse struct {
 // }
 
 func GetVegetable(w http.ResponseWriter, req *http.Request) {
-	fmt.Printf(chi.URLParam(req, "id"))
-	// jsonVegetables := []Vegetable{
-	// 	{ID: 1, Name: "Potato", Calories: 130},
-	// }
 	id, _ := strconv.Atoi(chi.URLParam(req, "id"))
 	jsonVegetables := models.GetRecord(id)
 	vr := VegetableResponse{

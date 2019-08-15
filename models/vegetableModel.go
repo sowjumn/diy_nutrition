@@ -42,12 +42,18 @@ func GetAllRecords() ([]*VegetableRecord, error) {
 	return vegetables, nil
 }
 
-func GetRecord(myid int) []*VegetableRecord {
+func GetRecord(myid int) []VegetableRecord {
+	var (
+		id       int
+		name     string
+		calories int
+	)
+
 	db := connectDB()
 	defer db.Close()
-	v := new(VegetableRecord)
-	db.QueryRow("SELECT * FROM Vegetables where id = myid").Scan(v.ID, v.Name, v.Calories)
-	return []*VegetableRecord{v}
+	queryStr := `SELECT id, name, calories FROM vegetables where id=$1`
+	db.QueryRow(queryStr, myid).Scan(&id, &name, &calories)
+	return []VegetableRecord{{ID: id, Name: name, Calories: calories}}
 }
 
 func AddRecord(myid int, name string, calories int, db *sql.DB) {
