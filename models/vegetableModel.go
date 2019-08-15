@@ -43,7 +43,7 @@ func GetAllRecords() ([]VegetableRecord, error) {
 	return vegetables, nil
 }
 
-func GetRecord(myid int) []VegetableRecord {
+func GetRecord(myid int) ([]VegetableRecord, error) {
 	var (
 		id       int
 		name     string
@@ -53,8 +53,8 @@ func GetRecord(myid int) []VegetableRecord {
 	db := connectDB()
 	defer db.Close()
 	queryStr := `SELECT id, name, calories FROM vegetables where id=$1`
-	db.QueryRow(queryStr, myid).Scan(&id, &name, &calories)
-	return []VegetableRecord{{ID: id, Name: name, Calories: calories}}
+	err := db.QueryRow(queryStr, myid).Scan(&id, &name, &calories)
+	return []VegetableRecord{{ID: id, Name: name, Calories: calories}}, err
 }
 
 func AddRecord(myid int, name string, calories int, db *sql.DB) {

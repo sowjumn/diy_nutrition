@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -41,11 +42,24 @@ func AllVegetables(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetVegetable(w http.ResponseWriter, req *http.Request) {
-	id, _ := strconv.Atoi(chi.URLParam(req, "id"))
-	jsonVegetables := models.GetRecord(id)
+	status := "ok"
+	code := 200
+	id, err := strconv.Atoi(chi.URLParam(req, "id"))
+	if err != nil {
+		status = "Vegetable ID not an integer"
+		code = 422
+	}
+	jsonVegetables, err := models.GetRecord(id)
+
+	if err != nil {
+		fmt.Printf("%v", err)
+		status = "Cant find Vegetable"
+		code = 404
+	}
+
 	vr := VegetableResponse{
-		Status:     "ok",
-		Code:       200,
+		Status:     status,
+		Code:       code,
 		Vegetables: jsonVegetables,
 	}
 
@@ -54,7 +68,7 @@ func GetVegetable(w http.ResponseWriter, req *http.Request) {
 		log.Fatal(err)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
+	w.WriteHeader(code)
 	w.Write(resp)
 }
 
