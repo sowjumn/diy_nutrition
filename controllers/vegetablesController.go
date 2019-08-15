@@ -22,26 +22,23 @@ type VegetableResponse struct {
 	Vegetables []models.VegetableRecord
 }
 
-// func AllVegetables(w http.ResponseWriter, req *http.Request) {
-// 	jsonVegetables := []models.VegetableRecord{
-// 		{ID: 1, Name: "Potato", Calories: 130},
-// 		{ID: 2, Name: "Broccoli", Calories: 50},
-// 	}
+func AllVegetables(w http.ResponseWriter, req *http.Request) {
+	jsonVegetables, _ := models.GetAllRecords()
 
-// 	vr := VegetableResponse{
-// 		Status:     "ok",
-// 		Code:       200,
-// 		Vegetables: jsonVegetables,
-// 	}
+	vr := VegetableResponse{
+		Status:     "ok",
+		Code:       200,
+		Vegetables: jsonVegetables,
+	}
 
-// 	resp, err := json.Marshal(vr)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	w.Header().Set("Content-Type", "application/json")
-// 	w.WriteHeader(200)
-// 	w.Write(resp)
-// }
+	resp, err := json.Marshal(vr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	w.Write(resp)
+}
 
 func GetVegetable(w http.ResponseWriter, req *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(req, "id"))

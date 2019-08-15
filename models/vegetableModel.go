@@ -22,12 +22,12 @@ func connectDB() *sql.DB {
 	return db
 }
 
-func GetAllRecords() ([]*VegetableRecord, error) {
+func GetAllRecords() ([]VegetableRecord, error) {
 	db := connectDB()
 	defer db.Close()
 
-	var vegetables []*VegetableRecord
-	rows, err := db.Query("SELECT * FROM Vegetables")
+	var vegetables []VegetableRecord
+	rows, err := db.Query("SELECT id, name, calories FROM Vegetables")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,9 +35,10 @@ func GetAllRecords() ([]*VegetableRecord, error) {
 
 	for rows.Next() {
 		vr := new(VegetableRecord)
-		if err := rows.Scan(vr.ID, vr.Name, vr.Calories); err != nil {
+		if err := rows.Scan(&vr.ID, &vr.Name, &vr.Calories); err != nil {
 			log.Fatal(err)
 		}
+		vegetables = append(vegetables, *vr)
 	}
 	return vegetables, nil
 }
