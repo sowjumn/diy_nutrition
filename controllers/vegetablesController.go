@@ -11,12 +11,6 @@ import (
 	"github.com/sowjumn/diy_nutrition/models"
 )
 
-type Vegetable struct {
-	ID       int
-	Name     string
-	Calories int
-}
-
 type VegetableResponse struct {
 	Status     string
 	Code       int
@@ -24,6 +18,11 @@ type VegetableResponse struct {
 }
 
 func AllVegetables(w http.ResponseWriter, req *http.Request) {
+	auth := checkAuth(w, req)
+	if auth == false {
+		return
+	}
+
 	jsonVegetables, _ := models.GetAllRecords()
 
 	vr := VegetableResponse{
@@ -41,7 +40,23 @@ func AllVegetables(w http.ResponseWriter, req *http.Request) {
 	w.Write(resp)
 }
 
+func checkAuth(w http.ResponseWriter, req *http.Request) bool {
+	accessToken := "yes"
+	_, p, _ := req.BasicAuth()
+	auth := true
+	if p != accessToken {
+		w.WriteHeader(http.StatusUnauthorized)
+		auth = false
+	}
+	return auth
+}
+
 func GetVegetable(w http.ResponseWriter, req *http.Request) {
+	auth := checkAuth(w, req)
+	if auth == false {
+		return
+	}
+
 	status := "ok"
 	code := 200
 	id, err := strconv.Atoi(chi.URLParam(req, "id"))
@@ -73,13 +88,22 @@ func GetVegetable(w http.ResponseWriter, req *http.Request) {
 }
 
 func AddVegetable(w http.ResponseWriter, req *http.Request) {
-
+	auth := checkAuth(w, req)
+	if auth == false {
+		return
+	}
 }
 
 func UpdateVegetable(w http.ResponseWriter, req *http.Request) {
-
+	auth := checkAuth(w, req)
+	if auth == false {
+		return
+	}
 }
 
 func DeleteVegetable(w http.ResponseWriter, req *http.Request) {
-
+	auth := checkAuth(w, req)
+	if auth == false {
+		return
+	}
 }

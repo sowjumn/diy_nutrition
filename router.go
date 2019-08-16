@@ -9,7 +9,6 @@ import (
 
 func main() {
 	r := chi.NewRouter()
-
 	r.Get("/vegetables", controllers.AllVegetables)
 	r.Get("/vegetables/{id}", controllers.GetVegetable)
 	r.Post("/vegetables", controllers.AddVegetable)
