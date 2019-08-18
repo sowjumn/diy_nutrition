@@ -117,6 +117,7 @@ func AddVegetable(w http.ResponseWriter, req *http.Request) {
 }
 
 func UpdateVegetable(w http.ResponseWriter, req *http.Request) {
+	code := http.StatusCreated
 	auth := checkAuth(w, req)
 	if auth == false {
 		return
@@ -126,11 +127,17 @@ func UpdateVegetable(w http.ResponseWriter, req *http.Request) {
 	var vegpost vegetableInfo
 	err := decoder.Decode(&vegpost)
 	if err != nil {
+		code = http.StatusUnprocessableEntity
 		log.Fatal(err)
 	}
 	id, _ := strconv.Atoi(chi.URLParam(req, "id"))
-	fmt.Printf("Name: %v, Calories: %v with id: %v", vegpost.Name, vegpost.Calories, id)
-	_ = models.UpdateRecord(id, vegpost.Name, vegpost.Calories)
+	err = models.UpdateRecord(id, vegpost.Name, vegpost.Calories)
+	if err != nil {
+		code = http.StatusInternalServerError
+		log.Fatal(err)
+	}
+	w.WriteHeader(code)
+	w.Write([]byte("Vegetable Updated"))
 }
 
 func DeleteVegetable(w http.ResponseWriter, req *http.Request) {
