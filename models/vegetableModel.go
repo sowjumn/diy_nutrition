@@ -58,23 +58,29 @@ func GetRecord(myid int) ([]VegetableRecord, error) {
 	return []VegetableRecord{{ID: id, Name: name, Calories: calories}}, err
 }
 
-func AddRecord(name string, calories int, db *sql.DB) error {
+func AddRecord(name string, calories int) error {
+	db := connectDB()
 	defer db.Close()
-	queryStr := `INSERT INTO Vegetables (name, calories) values ($1, $2)`
-	res, _ := db.Exec(queryStr, name, calories)
+	queryStr := `INSERT INTO vegetables (name, calories) values ($1, $2)`
+	res, err := db.Exec(queryStr, name, calories)
 	fmt.Printf("%v", res)
+	return err
 }
 
-func UpdateRecord(id int, name string, calories int, db *sql.DB) error {
+func UpdateRecord(id int, name string, calories int) error {
+	db := connectDB()
 	defer db.Close()
-	queryStr := `UPDATE Vegetables SET (name, calories) values ($1, $2) WHERE  id = $3`
-	res, _ := db.Exec(queryStr, name, calories, id)
+	queryStr := `UPDATE vegetables SET (name, calories) values ($1, $2) WHERE  id = $3`
+	res, err := db.Exec(queryStr, name, calories, id)
 	fmt.Printf("%v", res)
+	return err
 }
 
-func DeleteRecord(id int, name string, calories int, db *sql.DB) error {
+func DeleteRecord(id int, name string, calories int) error {
+	db := connectDB()
 	defer db.Close()
-	queryStr := `UPDATE Vegetables SET (name, calories) values ($1, $2) WHERE  id = $3`
-	res, _ := db.Exec(queryStr, id)
+	queryStr := `DELETE FROM vegetables WHERE id = $1`
+	res, err := db.Exec(queryStr, id)
 	fmt.Printf("%v", res)
+	return err
 }

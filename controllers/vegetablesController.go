@@ -27,7 +27,7 @@ func AllVegetables(w http.ResponseWriter, req *http.Request) {
 
 	vr := VegetableResponse{
 		Status:     "ok",
-		Code:       200,
+		Code:       http.StatusOK,
 		Vegetables: jsonVegetables,
 	}
 
@@ -36,7 +36,7 @@ func AllVegetables(w http.ResponseWriter, req *http.Request) {
 		log.Fatal(err)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
+	w.WriteHeader(http.StatusOK)
 	w.Write(resp)
 }
 
@@ -58,18 +58,18 @@ func GetVegetable(w http.ResponseWriter, req *http.Request) {
 	}
 
 	status := "ok"
-	code := 200
+	code := http.StatusOK
 	id, err := strconv.Atoi(chi.URLParam(req, "id"))
 	if err != nil {
 		status = "Vegetable ID not an integer"
-		code = 422
+		code = http.StatusUnprocessableEntity
 	}
 	jsonVegetables, err := models.GetRecord(id)
 
 	if err != nil {
 		fmt.Printf("%v", err)
 		status = "Cant find Vegetable"
-		code = 404
+		code = http.StatusNotFound
 	}
 
 	vr := VegetableResponse{
@@ -88,8 +88,8 @@ func GetVegetable(w http.ResponseWriter, req *http.Request) {
 }
 
 type vegetableInfo struct {
-	name     string
-	calories int
+	Name     string
+	Calories int
 }
 
 func AddVegetable(w http.ResponseWriter, req *http.Request) {
@@ -104,8 +104,9 @@ func AddVegetable(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Name: %v, Calories: %v", name, calories)
-	models.AddRecord(name, calories)
+	_ = models.AddRecord(vegpost.Name, vegpost.Calories)
+	w.WriteHeader(http.StatusCreated)
+	w.Write(resp)
 }
 
 func UpdateVegetable(w http.ResponseWriter, req *http.Request) {
@@ -120,8 +121,9 @@ func UpdateVegetable(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Name: %v, Calories: %v", id, name, calories)
-	models.UpdateRecord(name, calories)
+	id, _ := strconv.Atoi(chi.URLParam(req, "id"))
+	fmt.Printf("Name: %v, Calories: %v", id, vegpost.Name, vegpost.Calories)
+	_ = models.UpdateRecord(id, vegpost.Name, vegpost.Calories)
 }
 
 func DeleteVegetable(w http.ResponseWriter, req *http.Request) {
