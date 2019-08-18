@@ -104,7 +104,7 @@ func AddVegetable(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	_ = models.AddRecord(vegpost.Name, vegpost.Calories)
+	err = models.AddRecord(vegpost.Name, vegpost.Calories)
 	w.WriteHeader(http.StatusCreated)
 	w.Write(resp)
 }

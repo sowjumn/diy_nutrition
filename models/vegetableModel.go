@@ -63,7 +63,6 @@ func AddRecord(name string, calories int) error {
 	defer db.Close()
 	queryStr := `INSERT INTO vegetables (name, calories) values ($1, $2)`
 	res, err := db.Exec(queryStr, name, calories)
-	fmt.Printf("%v", res)
 	return err
 }
 
