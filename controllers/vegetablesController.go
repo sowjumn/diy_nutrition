@@ -87,11 +87,25 @@ func GetVegetable(w http.ResponseWriter, req *http.Request) {
 	w.Write(resp)
 }
 
+type vegetableInfo struct {
+	name     string
+	calories int
+}
+
 func AddVegetable(w http.ResponseWriter, req *http.Request) {
 	auth := checkAuth(w, req)
 	if auth == false {
 		return
 	}
+
+	decoder := json.NewDecoder(req.Body)
+	var vegpost vegetableInfo
+	err := decoder.Decode(&vegpost)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Name: %v, Calories: %v", name, calories)
+	models.AddRecord(name, calories)
 }
 
 func UpdateVegetable(w http.ResponseWriter, req *http.Request) {
@@ -99,6 +113,15 @@ func UpdateVegetable(w http.ResponseWriter, req *http.Request) {
 	if auth == false {
 		return
 	}
+
+	decoder := json.NewDecoder(req.Body)
+	var vegpost vegetableInfo
+	err := decoder.Decode(&vegpost)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Name: %v, Calories: %v", id, name, calories)
+	models.UpdateRecord(name, calories)
 }
 
 func DeleteVegetable(w http.ResponseWriter, req *http.Request) {

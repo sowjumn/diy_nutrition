@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	_ "github.com/lib/pq"
@@ -57,7 +58,23 @@ func GetRecord(myid int) ([]VegetableRecord, error) {
 	return []VegetableRecord{{ID: id, Name: name, Calories: calories}}, err
 }
 
-func AddRecord(myid int, name string, calories int, db *sql.DB) {
+func AddRecord(name string, calories int, db *sql.DB) error {
 	defer db.Close()
-	db.QueryRow("INSERT INTO Vegetables (id, name, calories) values (myid, name, calories)")
+	queryStr := `INSERT INTO Vegetables (name, calories) values ($1, $2)`
+	res, _ := db.Exec(queryStr, name, calories)
+	fmt.Printf("%v", res)
+}
+
+func UpdateRecord(id int, name string, calories int, db *sql.DB) error {
+	defer db.Close()
+	queryStr := `UPDATE Vegetables SET (name, calories) values ($1, $2) WHERE  id = $3`
+	res, _ := db.Exec(queryStr, name, calories, id)
+	fmt.Printf("%v", res)
+}
+
+func DeleteRecord(id int, name string, calories int, db *sql.DB) error {
+	defer db.Close()
+	queryStr := `UPDATE Vegetables SET (name, calories) values ($1, $2) WHERE  id = $3`
+	res, _ := db.Exec(queryStr, id)
+	fmt.Printf("%v", res)
 }
