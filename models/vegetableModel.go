@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
 	_ "github.com/lib/pq"
@@ -62,7 +61,7 @@ func AddRecord(name string, calories int) error {
 	db := connectDB()
 	defer db.Close()
 	queryStr := `INSERT INTO vegetables (name, calories) values ($1, $2)`
-	res, err := db.Exec(queryStr, name, calories)
+	_, err := db.Exec(queryStr, name, calories)
 	return err
 }
 
@@ -70,8 +69,7 @@ func UpdateRecord(id int, name string, calories int) error {
 	db := connectDB()
 	defer db.Close()
 	queryStr := `UPDATE vegetables SET (name, calories) values ($1, $2) WHERE  id = $3`
-	res, err := db.Exec(queryStr, name, calories, id)
-	fmt.Printf("%v", res)
+	_, err := db.Exec(queryStr, name, calories, id)
 	return err
 }
 
@@ -79,7 +77,6 @@ func DeleteRecord(id int, name string, calories int) error {
 	db := connectDB()
 	defer db.Close()
 	queryStr := `DELETE FROM vegetables WHERE id = $1`
-	res, err := db.Exec(queryStr, id)
-	fmt.Printf("%v", res)
+	_, err := db.Exec(queryStr, id)
 	return err
 }

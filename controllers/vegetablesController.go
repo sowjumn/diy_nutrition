@@ -94,6 +94,7 @@ type vegetableInfo struct {
 
 func AddVegetable(w http.ResponseWriter, req *http.Request) {
 	auth := checkAuth(w, req)
+	code := http.StatusCreated
 	if auth == false {
 		return
 	}
@@ -103,10 +104,16 @@ func AddVegetable(w http.ResponseWriter, req *http.Request) {
 	err := decoder.Decode(&vegpost)
 	if err != nil {
 		log.Fatal(err)
+		code = http.StatusUnprocessableEntity
 	}
 	err = models.AddRecord(vegpost.Name, vegpost.Calories)
-	w.WriteHeader(http.StatusCreated)
-	w.Write(resp)
+	if err != nil {
+		code = http.StatusInternalServerError
+		log.Fatal(err)
+	}
+
+	w.WriteHeader(code)
+	w.Write([]byte("Vegetable Created"))
 }
 
 func UpdateVegetable(w http.ResponseWriter, req *http.Request) {
