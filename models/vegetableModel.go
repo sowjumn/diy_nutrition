@@ -68,8 +68,11 @@ func AddRecord(name string, calories int) error {
 func UpdateRecord(id int, name string, calories int) error {
 	db := connectDB()
 	defer db.Close()
-	queryStr := `UPDATE vegetables SET (name, calories) values ($1, $2) WHERE  id = $3`
+	queryStr := `UPDATE vegetables SET name=$1, calories=$2 WHERE  id=$3`
 	_, err := db.Exec(queryStr, name, calories, id)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return err
 }
 

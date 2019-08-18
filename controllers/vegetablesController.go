@@ -129,7 +129,7 @@ func UpdateVegetable(w http.ResponseWriter, req *http.Request) {
 		log.Fatal(err)
 	}
 	id, _ := strconv.Atoi(chi.URLParam(req, "id"))
-	fmt.Printf("Name: %v, Calories: %v", id, vegpost.Name, vegpost.Calories)
+	fmt.Printf("Name: %v, Calories: %v with id: %v", vegpost.Name, vegpost.Calories, id)
 	_ = models.UpdateRecord(id, vegpost.Name, vegpost.Calories)
 }
 
